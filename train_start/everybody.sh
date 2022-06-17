@@ -1,0 +1,55 @@
+# DANCE_NAME=dance16
+DANCE_NAME=$1
+ceph=private_alyssatan
+# DATASETDIR=/mnt/2/sunyangtian/DanceDataset
+# DATASETDIR=../../DanceDataset
+DATASETDIR=/home/sunyangtian/sytDisk/PAMI
+HOSTDIR=/home/sunyangtian/sytDisk/PAMI
+# /apdcephfs/${ceph}/SYT/${DANCE_NAME}/
+# --load_pretrain_TransG /apdcephfs/share_1364276/alyssatan/checkpoints/${DANCE_NAME}_static_train  \
+
+# _static_train_PosePositionEmbedding
+py=../../miniconda3/envs/PAMI/bin/python
+
+${py} ./train.py  \
+--name ${DANCE_NAME}_every_All \
+--batchSize 1  \
+--gpu_ids 0  \
+--use_laplace  \
+--checkpoints_dir ${HOSTDIR}/checkpoints  	  \
+--pose_path ${DATASETDIR}/${DANCE_NAME}/openpose_json  	 	\
+--mask_path ${DATASETDIR}/${DANCE_NAME}/mask 	  	\
+--img_path ${DATASETDIR}/${DANCE_NAME}/${DANCE_NAME} 	  	\
+--densepose_path ${DATASETDIR}/${DANCE_NAME}/densepose 	  	\
+--bg_path ${DATASETDIR}/${DANCE_NAME}/bg.jpg 	  	\
+--texture_path ${DATASETDIR}/${DANCE_NAME}/texture.jpg 	  	\
+--flow_path ${DATASETDIR}/${DANCE_NAME}/flow    \
+--flow_inv_path ${DATASETDIR}/${DANCE_NAME}/flow_inv \
+--no_flip  \
+--instance_feat  \
+--input_nc 3  \
+--loadSize 512  \
+--resize_or_crop resize  \
+--load_pretrain_TransG ${DATASETDIR}/uvGenerator_pretrain_new/  \
+--which_epoch_TransG 2   \
+--lambda_L2 500  \
+--lambda_UV 1000  \
+--lambda_Prob 10  \
+--use_densepose_loss  \
+--save_epoch_freq 20  \
+--data_ratio 0.9 \
+--lambda_Temp 500 \
+--tf_log \
+--use_everybody \
+--save_epoch_freq 5
+
+
+
+# --max_dataset_size 500 \
+# --display_freq 10 \
+# --print_freq 10 \
+
+# --continue_train \
+# --display_freq 10 \
+# --print_freq 10 \
+

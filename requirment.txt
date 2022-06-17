@@ -1,0 +1,5 @@
+dominate
+pillow
+opencv-python
+scipy
+tensorboard
