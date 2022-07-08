@@ -12,8 +12,8 @@ HOSTDIR=../PAMI
 py=../miniconda3/envs/PAMIJittor/bin/python
 
 ${py} ./train.py  \
---name ${DANCE_NAME}_multiPoseJittor \
---batchSize 2  \
+--name ${DANCE_NAME}_multiPoseJittor_debug \
+--batchSize 1  \
 --gpu_ids 0  \
 --use_laplace  \
 --checkpoints_dir ${HOSTDIR}/checkpoints_testJittor  	  \

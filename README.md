@@ -8,6 +8,7 @@ install [jittor](https://github.com/Jittor/jittor)
 
 ```
 pip install opencv-python
+pip install scikit-image
 pip instal scipy
 pip install dominate
 pip install tensorflow (for tensorboard)

@@ -105,6 +105,7 @@ class Pix2PixHD_Avatar(BaseModel):
             bg_tensor = read_bg_to_tensor(opt.bg_path, opt.loadSize)
             # self.BG = torch.nn.Parameter(bg_tensor.to(device=self.device)) # (3,h,w)
             self.BG = bg_tensor
+            self.BG.register_hook(print_grad)
 
         # Discriminator network
         if self.isTrain:
@@ -203,21 +204,23 @@ class Pix2PixHD_Avatar(BaseModel):
 
     def init_optimizer_G(self, epoch, StaticEpoch=3):
         ratio = 1
-        if epoch <= StaticEpoch:
-            print("The epoch is %d, Static update !" % epoch)
-            # ratio = 0.9 ** (epoch)
-            self.optimizer_G = jt.optim.Adam([{'params': self.TransG.parameters(), 'lr': self.lr*ratio},
-                                                 {'params': self.texture, 'lr': self.lr},
-                                                 {'params': self.Feature2RGB.parameters(), 'lr': self.lr*ratio},
-                                                 {'params': self.BG, 'lr': self.lr*5}], betas=(self.beta1, 0.999), lr=self.lr)
-        else:
-            # ratio = 0.9 ** (epoch)
-            print("The epoch is %d, decrease TransG !" % epoch)
-            # update All
-            self.optimizer_G = jt.optim.Adam([{'params': self.TransG.parameters(), 'lr': self.lr*ratio},
-                                                 {'params': self.texture, 'lr': self.lr},
-                                                 {'params': self.Feature2RGB.parameters(), 'lr': self.lr},
-                                                 {'params': self.BG, 'lr': self.lr*5}], betas=(self.beta1, 0.999), lr=self.lr)
+        # if epoch <= StaticEpoch:
+        #     print("The epoch is %d, Static update !" % epoch)
+        #     # ratio = 0.9 ** (epoch)
+        #     self.optimizer_G = jt.optim.Adam([{'params': self.TransG.parameters(), 'lr': self.lr*ratio},
+        #                                          {'params': self.texture, 'lr': self.lr},
+        #                                          {'params': self.Feature2RGB.parameters(), 'lr': self.lr*ratio},
+        #                                          {'params': self.BG, 'lr': self.lr*5}], betas=(self.beta1, 0.999), lr=self.lr)
+        # else:
+        #     # ratio = 0.9 ** (epoch)
+        #     print("The epoch is %d, decrease TransG !" % epoch)
+        #     # update All
+        #     self.optimizer_G = jt.optim.Adam([{'params': self.TransG.parameters(), 'lr': self.lr*ratio},
+        #                                          {'params': self.texture, 'lr': self.lr},
+        #                                          {'params': self.Feature2RGB.parameters(), 'lr': self.lr},
+        #                                          {'params': self.BG, 'lr': self.lr*5}], betas=(self.beta1, 0.999), lr=self.lr)
+        self.optimizer_G = jt.optim.Adam(self.TransG.parameters()+[self.texture]+self.Feature2RGB.parameters()+[self.BG], betas=(self.beta1, 0.999), lr=self.lr*ratio)
+
         return self.optimizer_G
 
     def backwarp(self, tenInput, tenFlow):
@@ -308,8 +311,8 @@ class Pix2PixHD_Avatar(BaseModel):
         fake_image = fg_image * (1-bg_mask) + bg_image * (bg_mask)
         fake_image_raw = fg_image_raw * (1-bg_mask) + bg_image * (bg_mask)
 
-        StaticEpoch = 10
-        # StaticEpoch = 0
+        # StaticEpoch = 10
+        StaticEpoch = 0
         self.StaticEpoch = StaticEpoch
 
     ### GAN loss ###

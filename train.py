@@ -129,7 +129,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         # t2 = time.time()
         # print("forward time: ", t2-t1)
         # sum per device losses
-        losses = [jt.mean(x) if not isinstance(x, int) else x for x in losses ]
+        losses = [jt.mean(x) if not isinstance(x, int) else x for x in losses]
         loss_dict = dict(zip(model.loss_names, losses))
 
         # calculate final loss scalar

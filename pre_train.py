@@ -67,7 +67,8 @@ class DatasetTrans(BaseDataset):
 
                 # posepts = util.fix_scale_coords(posepts, scale, translate)
                 ptsList = [util.fix_scale_coords(xx, scale, translate) for xx in ptsList]
-                ptsList = dataArgument(ptsList, xDirection=5, yDirection=20)
+                # ptsList = dataArgument(ptsList, xDirection=5, yDirection=20)
+                ptsList = dataArgument(ptsList)
                 poseptsAll.append(ptsList)
             self.posepts = np.stack(poseptsAll)
 
