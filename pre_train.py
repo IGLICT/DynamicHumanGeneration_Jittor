@@ -313,11 +313,3 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         model.save('latest')
         model.save(epoch)
         np.savetxt(iter_path, (epoch+1, 0), delimiter=',', fmt='%d')
-
-    # ### instead of only training the local enhancer, train the entire network after certain iterations
-    # if (opt.niter_fix_global != 0) and (epoch == opt.niter_fix_global):
-    #     model.update_fixed_params()
-
-    # ### linearly decay learning rate after certain iterations
-    # if epoch > opt.niter:
-    #     model.update_learning_rate()

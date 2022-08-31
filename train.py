@@ -93,15 +93,8 @@ csv_lines = []
 
 best_psnr, best_ssim = -np.Inf, -np.Inf
 
-# model.module.Feature2RGB.train()
-# model.module.TransG.train()
 for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
     epoch_start_time = time.time()
-    # optimizer_G = model.module.init_optimizer_G(epoch=epoch)
-
-    # if (id(optimizer_G) != id(model.module.optimizer_G)):
-    #     print("optimizer_G is not the same with model.optimizer, something is wrong !!!")
-    #     input()
 
     train_fake_imgs, train_real_imgs = [], []
     val_fake_imgs, val_real_imgs = [], []
@@ -126,9 +119,6 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
                                         data['Pose_before'], data['mask_before'], data['real_before'], data['pc_before'], data['pa_before'], \
                                         data['flow'], data['flow_inv'])
 
-        # t2 = time.time()
-        # print("forward time: ", t2-t1)
-        # sum per device losses
         losses = [jt.mean(x) if not isinstance(x, int) else x for x in losses]
         loss_dict = dict(zip(model.loss_names, losses))
 
@@ -139,22 +129,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         loss_G = loss_dict['G_GAN'] + loss_dict.get('L2',0) + loss_dict.get('G_VGG',0) + loss_dict.get('UV_loss',0) \
                     + loss_dict.get('Probs_loss',0) + loss_dict.get('mask',0)
 
-        ############### Backward Pass ####################
-        # # update generator weights
-        # optimizer_G.zero_grad()
-        # if opt.fp16:                                
-        #     with amp.scale_loss(loss_G, optimizer_G) as scaled_loss: scaled_loss.backward()                
-        # else:
-        #     loss_G.backward()          
-        # optimizer_G.step()
-
-        # # update discriminator weights
-        # optimizer_D.zero_grad()
-        # if opt.fp16:                                
-        #     with amp.scale_loss(loss_D, optimizer_D) as scaled_loss: scaled_loss.backward()                
-        # else:
-        #     loss_D.backward()
-        # optimizer_D.step()     
+        ############### Backward Pass ####################  
 
         # update generator weights
         model.optimizer_G.zero_grad()
@@ -208,9 +183,6 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
 
         ### save latest model
         if total_steps % opt.save_latest_freq == save_delta:
-            # print('saving the latest model (epoch %d, total_steps %d)' % (epoch, total_steps))
-            # model.module.save('latest')
-            # np.savetxt(iter_path, (epoch, epoch_iter), delimiter=',', fmt='%d')
             print("Current model is %s" % (opt.name))
 
         if epoch_iter >= dataset_size:
@@ -224,8 +196,6 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
     csv_lines.append("Epoch %d:" % (epoch))
     csv_lines.append("      Train        : PSNR %f,    SSIM %f" % (psnr, ssim))
 
-
-#     cv2.imwrite('latest_texture.jpg', cur_texture)
 
     # validation
     if not opt.debug:
@@ -316,12 +286,6 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         cur_bg = util.tensor2im(bg_image[0])
         bg_path = os.path.join(opt.checkpoints_dir, opt.name, '%s_bg.jpg' % (epoch))
         cv2.imwrite(bg_path, cur_bg[:,:,::-1])
-
-    # ### instead of only training the local enhancer, train the entire network after certain iterations
-    # if (opt.niter_fix_global != 0) and (epoch == opt.niter_fix_global):
-    #     print(" ****** update fixed parameters ! ******")
-    #     model.module.update_fixed_params()
-    #     optimizer_G = model.module.optimizer_G
 
     ### linearly decay learning rate after certain iterations
     if epoch > opt.niter:

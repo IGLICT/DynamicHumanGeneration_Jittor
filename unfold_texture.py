@@ -156,8 +156,6 @@ if __name__ == '__main__':
     img_paths = sorted(glob.glob(img_dir+'/*.jpg'))
     img_paths += sorted(glob.glob(img_dir+'/*.png'))[:5000]
     IUV_paths = sorted(glob.glob(IUV_dir+'/*.png'))[:5000]
-    # if len(IUV_paths) == 0:
-    #     IUV_paths = sorted(glob.glob(IUV_dir+'/*.jpg'))
     
     assert(len(img_paths) == len(IUV_paths)), "img_paths: %d, IUV_paths: %d " % (len(img_paths),len(IUV_paths))
 
@@ -184,63 +182,3 @@ if __name__ == '__main__':
         save_path = os.path.join(os.path.dirname(img_dir), "texture.jpg")
         # visualizeTex(TextureIm_, '/home/sunyangtian/104mnt/DanceDataset/dance14/texture.jpg')
         visualizeTex(TextureIm_, save_path)
-
-
-    ### for single unfold test
-    if False:
-        TextureIm_  = np.zeros([24,200,200,3])
-        TextureCnt = np.ones([24,200,200,3], dtype=np.int32)
-        IUV_path = IUV_paths[0]
-        img_path = img_paths[0]
-        TextureIm_ = unfold(img_path, IUV_path)
-        visualizeTex(TextureIm_, '/home/sunyangtian/104/iPER/iPER_1024_label/001/12/single_texture.jpg', do_close=True)
-
-
-    ### for wrap test
-    if False:
-        tex_dir = '/home/sunyangtian/104/iPER/iPER_1024_label/001/12/part_texture/1'
-        tex_paths = sorted(glob.glob(tex_dir+'/*.jpg'))
-        # IUV_path = IUV_paths[530]
-        IUV_path = '/home/sunyangtian/104/iPER/iPER_1024_label/008/3/densepose/2/frame00092_IUV.png'
-        # tex_path = tex_paths[530]
-        tex_path = '/home/sunyangtian/104/iPER/iPER_1024_label/001/12/test_texture.jpg'
-        # tex_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_static/checkpoints/static_train/web/images/epoch087_synthesized_texture.jpg'
-        # tex_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/images/frame00092_keypoints_synthesized_texture.jpg'
-        visTexture = wrap(tex_path, IUV_path)
-        save_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/frame00092_wrap_initial.jpg'
-        # print("test:", visTexture[190:193,550:553])
-        cv2.imwrite(save_path, visTexture[:,:,::-1])
-    
-    ### for wrap_v2 test
-    if False:
-        tex_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_static/checkpoints/static_train/web/images/epoch087_synthesized_texture.jpg'
-        # tex_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/images/frame00092_keypoints_synthesized_texture.jpg'
-        # tex_path = '/home/sunyangtian/104/iPER/iPER_1024_label/001/12/texture.jpg'
-        I_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/images/frame00092_keypoints_Probs.jpg'
-        U_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/images/frame00092_keypoints_U.jpg'
-        V_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/images/frame00092_keypoints_V.jpg'
-
-        IUV, wraped_Im = wrap_v2(tex_path, I_path, U_path, V_path)
-        save_dense_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/frame00092_gen_densepose.jpg'
-        # cv2.imwrite(save_dense_path, IUV)
-        save_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/frame00092_wrap_v2_static.jpg'
-        cv2.imwrite(save_path, wraped_Im[:,:,::-1])
-
-
-    ### for wrap_v3 test
-    if False:
-        # tex_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_static/checkpoints/static_train/web/images/epoch087_synthesized_texture.jpg'
-        # tex_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/images/frame00092_keypoints_synthesized_texture.jpg'
-        tex_path = '/home/sunyangtian/104/iPER/iPER_1024_label/001/12/texture.jpg'
-        Probs_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/images/frame00092_keypoints_Probs.npy'
-        UVs_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/images/frame00092_keypoints_UVs.npy'
-
-        wraped_Im = wrap_v3(tex_path, Probs_path, UVs_path)
-        save_dense_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/frame00092_gen_densepose.jpg'
-        # cv2.imwrite(save_dense_path, IUV)
-        save_path = '/home/sunyangtian/104/code/pix2pixHD_avatar_08/test_single_input/0809_train_2/test_latest/frame00092_wrap_v3_initial.jpg'
-        cv2.imwrite(save_path, wraped_Im[:,:,::-1])
-
-    # IUV_path = './demo_data/frame00003_IUV.png'
-    # IUV = cv2.imread(IUV_path)
-    # visTexture = TransferTexture(TextureIm_, IUV)
