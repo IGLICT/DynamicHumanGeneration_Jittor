@@ -2,9 +2,7 @@
 
 ### [Paper](https://ieeexplore.ieee.org/document/9756251) | [Video](https://www.bilibili.com/video/BV1y64y1C7ge/)<br>
 
-<p align='center'>  
-  <img src='imgs/teaser.png' width='600'/>
-</p>
+![Teaser image](./imgs/teaser.png)
 ## Abstract
 Pose transfer of human videos aims to generate a high-fidelity video of a target person imitating actions of a source person. A few studies have made great progress either through image translation with deep latent features or neural rendering with explicit 3D features. 
 However, both of them rely on large amounts of training data to generate realistic results, and the performance degrades on more accessible Internet videos due to insufficient training frames.
